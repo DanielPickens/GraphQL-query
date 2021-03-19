@@ -1,0 +1,25 @@
+# Provide $query as a variable. 
+# The query is the same as you would enter into the search field e.g. "org:dandevs in:name feedreader"
+
+query GetFilesQuery($branch: GitObjectID, $query: String!) {
+ search(first: 1, type: REPOSITORY, query: $query) {
+    edges {
+      node {
+        ... on Repository {
+          object(expression: "head:", oid: $branch) {
+            ... on Tree {
+              entries {
+                name
+                object {
+                  ... on Blob {
+                    text
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
